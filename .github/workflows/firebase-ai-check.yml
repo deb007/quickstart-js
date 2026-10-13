@@ -1,0 +1,58 @@
+name: Check Firebase AI Samples
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - "ai/**"
+
+jobs:
+  build-react-app:
+    name: Build React App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # ratchet:actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: "ai/ai-react-app/yarn.lock"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+        working-directory: ./ai/ai-react-app
+
+      - name: Build application
+        run: yarn build
+        working-directory: ./ai/ai-react-app
+
+  build-ai-samples-app:
+    name: Build AI Samples App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # ratchet:actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # ratchet:actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: "yarn"
+          cache-dependency-path: "ai/ai-samples/package-lock.json"
+
+      - name: Install dependencies
+        run: npm install
+        working-directory: ./ai/ai-samples
+
+      - name: Build application
+        run: npm run build
+        working-directory: ./ai/ai-samples
